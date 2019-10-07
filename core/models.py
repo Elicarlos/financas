@@ -9,6 +9,10 @@ class Entrada(models.Model):
     valor = models.FloatField()
     descricao = models.TextField()
     data_entrada = models.DateField(blank=True, null=True)
+    user = models.OneToOneField(User, on_delete=models.PROTECT, related_name='Entrada')
+    total_entrada = models.FloatField()
+
+    
 
     def salvar(self):
         self.data_entrada = timezone.now()
@@ -23,6 +27,7 @@ class Saida(models.Model):
     valor = models.FloatField()
     descricao = models.TextField()
     data_saida = models.DateField()
+    user = models.OneToOneField(User, on_delete=models.PROTECT, related_name='Saida')
 
     def salvar(self):
         self.data_saida = timezone.now()
@@ -33,8 +38,11 @@ class Saida(models.Model):
 
 
 class Usuario(models.Model):
-    cpf = models.OneToOneField(User, on_delete=models.CASCADE, related_name='Usuario')    
+    user = models.OneToOneField(User, on_delete=models.PROTECT, related_name='Usuario')
+    cpf = models.CharField(max_length=14)    
     nome = models.CharField(max_length=100)
+    email = models.EmailField()
+    
 
     def __str__(self):
         return self.nome
@@ -42,7 +50,6 @@ class Usuario(models.Model):
 
 class Familia(models.Model):
     nome = models.CharField(max_length=200)
-    parentesco = models.CharField(max_length=100)
     membro = models.ForeignKey(
         'Usuario', on_delete=models.CASCADE, related_name='Familia'
     )
